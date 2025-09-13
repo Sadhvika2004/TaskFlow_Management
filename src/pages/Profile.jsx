@@ -10,33 +10,14 @@ import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Calendar, Mail, MapPin, Phone, Edit, Award, Clock, Target, Save, X } from "lucide-react";
 import { useTaskFlow } from "@/hooks/useTaskFlow";
+import { useProfile } from "@/contexts/ProfileContext";
 import { useState } from "react";
 import { toast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const { tasks, activeProject } = useTaskFlow();
-  const [isEditing, setIsEditing] = useState(false);
+  const { userProfile, updateProfile } = useProfile();
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  // Mock user data - in a real app, this would come from the backend
-  const [userProfile, setUserProfile] = useState({
-    name: "Asha Patel",
-    email: "asha@taskflow.com",
-    role: "Product Manager",
-    department: "Product",
-    location: "San Francisco, CA",
-    phone: "+1 (555) 123-4567",
-    joinDate: "2022-03-15",
-    avatar: "https://images.unsplash.com/photo-1494790108755-2616b84e2b19?w=120&h=120&fit=crop&crop=face",
-    bio: "Passionate product manager with 5+ years of experience in building user-centric products. I love working with cross-functional teams to deliver exceptional user experiences.",
-    skills: ["Product Strategy", "User Research", "Agile", "Data Analysis", "Team Leadership"],
-    stats: {
-      totalTasks: tasks.length,
-      completedTasks: tasks.filter(task => task.status === 'done').length,
-      activeProjects: 1,
-      averageCompletionTime: "2.3 days"
-    }
-  });
 
   const [editForm, setEditForm] = useState({
     name: userProfile.name,
@@ -76,7 +57,7 @@ const Profile = () => {
       skills: editForm.skills.split(",").map(skill => skill.trim()).filter(skill => skill)
     };
     
-    setUserProfile(updatedProfile);
+    updateProfile(updatedProfile);
     setEditDialogOpen(false);
     
     toast({
@@ -100,6 +81,14 @@ const Profile = () => {
   };
 
   const recentTasks = tasks.slice(0, 5);
+
+  // Calculate stats
+  const stats = {
+    totalTasks: tasks.length,
+    completedTasks: tasks.filter(task => task.status === 'done').length,
+    activeProjects: 1,
+    averageCompletionTime: "2.3 days"
+  };
 
   return (
     <Layout showAnalytics={false}>
@@ -178,19 +167,19 @@ const Profile = () => {
               <h3 className="text-lg font-semibold text-foreground mb-4">Activity Overview</h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground mb-1">{userProfile.stats.totalTasks}</div>
+                  <div className="text-2xl font-bold text-foreground mb-1">{stats.totalTasks}</div>
                   <div className="text-sm text-muted-foreground">Total Tasks</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground mb-1">{userProfile.stats.completedTasks}</div>
+                  <div className="text-2xl font-bold text-foreground mb-1">{stats.completedTasks}</div>
                   <div className="text-sm text-muted-foreground">Completed</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground mb-1">{userProfile.stats.activeProjects}</div>
+                  <div className="text-2xl font-bold text-foreground mb-1">{stats.activeProjects}</div>
                   <div className="text-sm text-muted-foreground">Active Projects</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-foreground mb-1">{userProfile.stats.averageCompletionTime}</div>
+                  <div className="text-2xl font-bold text-foreground mb-1">{stats.averageCompletionTime}</div>
                   <div className="text-sm text-muted-foreground">Avg. Completion</div>
                 </div>
               </div>

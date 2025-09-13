@@ -5,6 +5,7 @@ import { CreateProjectDialog } from "./CreateProjectDialog";
 import { ProfileDropdown } from "./ProfileDropdown";
 import { SettingsDialog } from "./SettingsDialog";
 import { useTaskFlow } from "@/hooks/useTaskFlow";
+import { useProfile } from "@/contexts/ProfileContext";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 export function Sidebar({ projects, activeProject, onSwitchProject, onCreateProject }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const navigate = useNavigate();
+  const { userProfile } = useProfile();
 
   const handleNotifications = () => {
     toast({
@@ -40,7 +42,7 @@ export function Sidebar({ projects, activeProject, onSwitchProject, onCreateProj
         <div className="flex items-center gap-3 mb-4">
           <ProfileDropdown />
           <div>
-            <h2 className="font-semibold text-lg">Good morning, Asha</h2>
+            <h2 className="font-semibold text-lg">Good morning, {userProfile.name.split(' ')[0]}</h2>
             <p className="text-muted-foreground text-sm">3 tasks due today</p>
           </div>
         </div>

@@ -19,10 +19,12 @@ import {
   BarChart3
 } from "lucide-react";
 import { useTaskFlow } from "@/hooks/useTaskFlow";
+import { useProfile } from "@/contexts/ProfileContext";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { projects, tasks, createProject } = useTaskFlow();
+  const { userProfile } = useProfile();
   const navigate = useNavigate();
 
   const completedTasks = tasks.filter(task => task.status === 'done').length;
@@ -48,7 +50,7 @@ const Home = () => {
       <div className="p-6 max-w-7xl mx-auto">
         {/* Welcome Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back, Asha! 👋</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back, {userProfile.name.split(' ')[0]}! 👋</h1>
           <p className="text-muted-foreground text-lg">Here's what's happening with your projects today.</p>
         </div>
 

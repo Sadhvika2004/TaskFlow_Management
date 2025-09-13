@@ -9,12 +9,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/hooks/use-toast";
 import { SettingsDialog } from "./SettingsDialog";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useProfile } from "@/contexts/ProfileContext";
 
 export function ProfileDropdown() {
   const [open, setOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+  const { userProfile } = useProfile();
 
   const handleProfile = () => {
     navigate('/profile');
@@ -49,8 +51,10 @@ export function ProfileDropdown() {
         <PopoverTrigger asChild>
           <Button variant="ghost" className="p-0 h-auto rounded-full">
             <Avatar className="h-12 w-12 ring-2 ring-primary/20 cursor-pointer hover:ring-primary/30 transition-all">
-              <AvatarImage src="https://images.unsplash.com/photo-1494790108755-2616b84e2b19?w=120&h=120&fit=crop&crop=face" />
-              <AvatarFallback className="gradient-primary text-foreground font-semibold">A</AvatarFallback>
+              <AvatarImage src={userProfile.avatar} />
+              <AvatarFallback className="gradient-primary text-foreground font-semibold">
+                {userProfile.name.split(' ').map(n => n[0]).join('')}
+              </AvatarFallback>
             </Avatar>
           </Button>
         </PopoverTrigger>
@@ -59,12 +63,14 @@ export function ProfileDropdown() {
             <div className="p-4">
               <div className="flex items-center gap-3 mb-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src="https://images.unsplash.com/photo-1494790108755-2616b84e2b19?w=120&h=120&fit=crop&crop=face" />
-                  <AvatarFallback className="gradient-primary text-foreground font-semibold text-sm">A</AvatarFallback>
+                  <AvatarImage src={userProfile.avatar} />
+                  <AvatarFallback className="gradient-primary text-foreground font-semibold text-sm">
+                    {userProfile.name.split(' ').map(n => n[0]).join('')}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 cursor-pointer" onClick={handleProfile}>
-                  <h3 className="font-semibold text-foreground hover:text-primary transition-colors">Asha Patel</h3>
-                  <p className="text-sm text-muted-foreground">asha@taskflow.com</p>
+                  <h3 className="font-semibold text-foreground hover:text-primary transition-colors">{userProfile.name}</h3>
+                  <p className="text-sm text-muted-foreground">{userProfile.email}</p>
                 </div>
               </div>
               <Separator className="my-3" />
