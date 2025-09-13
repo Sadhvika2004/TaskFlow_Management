@@ -1,73 +1,109 @@
-# Welcome to your Lovable project
+# TaskFlow — Friendly Task Management
 
-## Project info
+A warm, approachable task management UI built with React, Vite, Tailwind CSS, and shadcn-style Radix components.
 
-**URL**: https://lovable.dev/projects/70128855-b96a-4c6e-973b-d077e8c05c68
+## Tech Stack
+- React 18 + Vite (SWC)
+- JavaScript (JSX)
+- Tailwind CSS + tailwindcss-animate
+- Radix UI primitives (shadcn-style components)
+- React Router DOM
+- TanStack Query (React Query)
+- Recharts
+- Lucide React icons
 
-## How can I edit this code?
+## Requirements
+- Node.js 18+ (Vite 5 requires Node 18 or newer)
+- npm
 
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/70128855-b96a-4c6e-973b-d077e8c05c68) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
+## Getting Started
+1) Install dependencies
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+npm install
 ```
 
-**Edit a file directly in GitHub**
+2) Start the dev server
+```sh
+npm run dev
+```
+- App runs at: http://localhost:8080 (configured in `vite.config.js`)
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3) Build for production
+```sh
+npm run build
+```
 
-**Use GitHub Codespaces**
+4) Preview the production build
+```sh
+npm run preview
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+5) Lint the project
+```sh
+npm run lint
+```
 
-## What technologies are used for this project?
+## Scripts
+- dev: `vite`
+- build: `vite build`
+- build:dev: `vite build --mode development`
+- preview: `vite preview`
+- lint: `eslint .`
 
-This project is built with:
+## Path Alias
+This project uses an alias for cleaner imports:
+- `@` -> `./src`
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Example:
+```js
+import { Button } from "@/components/ui/button";
+```
 
-## How can I deploy this project?
+## Project Structure (high level)
+- `src/main.jsx` — App bootstrap
+- `src/App.jsx` — App shell and routes
+- `src/pages/` — Pages: Index, Sprint, Backlog, Reports, NotFound
+- `src/components/` — Feature components
+- `src/components/ui/` — Reusable UI primitives (Radix-based)
+- `src/hooks/` — Custom hooks (`use-toast`, `use-mobile`, etc.)
+- `src/lib/` — Utilities (`utils.js`)
 
-Simply open [Lovable](https://lovable.dev/projects/70128855-b96a-4c6e-973b-d077e8c05c68) and click on Share -> Publish.
+## Styling
+- Tailwind configured in `tailwind.config.js` and `postcss.config.js`
+- Dark mode via `class` strategy
+- Inter font loaded in `index.html`
 
-## Can I connect a custom domain to my Lovable project?
+## Toasts
+The app uses a Radix-based toaster with a simple toast store.
+- Toaster component: `@/components/ui/toaster`
+- Hook and API: `@/hooks/use-toast`
 
-Yes, you can!
+Usage example:
+```jsx
+import { toast } from "@/hooks/use-toast";
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+function Example() {
+  return (
+    <button
+      onClick={() => toast({ title: "Saved", description: "Your changes are saved." })}
+    >
+      Save
+    </button>
+  );
+}
+```
+Ensure `<Toaster />` is rendered in `App.jsx` (it already is).
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+## Routing
+- Configured with React Router DOM in `App.jsx`.
+- Update routes inside `<Routes>` as needed.
+
+## Charts
+- Recharts is available and a `ChartContainer` helper is provided at `@/components/ui/chart.jsx` to apply themed styles.
+
+## Deployment
+This is a standard Vite app. After `npm run build`, deploy the `dist/` folder to your static hosting of choice, or use `npm run preview` to test locally.
+
+## Notes
+- Codebase is JavaScript (JSX). Some UI files are adapted from TypeScript sources but compile as JS.
+- A minimal toast system (`use-toast`) is implemented to work with the provided Toaster.
