@@ -4,7 +4,8 @@ import { LayoutDashboard, List, PlayCircle, BarChart3, Settings } from "lucide-r
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { to: "/", icon: LayoutDashboard, label: "Board" },
+  { to: "/", icon: LayoutDashboard, label: "Home" },
+  { to: "/board", icon: LayoutDashboard, label: "Board" },
   { to: "/backlog", icon: List, label: "Backlog" },
   { to: "/sprint", icon: PlayCircle, label: "Active Sprint" },
   { to: "/reports", icon: BarChart3, label: "Reports" },

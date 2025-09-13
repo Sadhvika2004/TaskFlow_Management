@@ -3,15 +3,23 @@ import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, Mail, MapPin, Phone, Edit, Award, Clock, Target } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Calendar, Mail, MapPin, Phone, Edit, Award, Clock, Target, Save, X } from "lucide-react";
 import { useTaskFlow } from "@/hooks/useTaskFlow";
+import { useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const { tasks, activeProject } = useTaskFlow();
+  const [isEditing, setIsEditing] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Mock user data - in a real app, this would come from the backend
-  const userProfile = {
+  const [userProfile, setUserProfile] = useState({
     name: "Asha Patel",
     email: "asha@taskflow.com",
     role: "Product Manager",
@@ -28,6 +36,67 @@ const Profile = () => {
       activeProjects: 1,
       averageCompletionTime: "2.3 days"
     }
+  });
+
+  const [editForm, setEditForm] = useState({
+    name: userProfile.name,
+    email: userProfile.email,
+    role: userProfile.role,
+    department: userProfile.department,
+    location: userProfile.location,
+    phone: userProfile.phone,
+    bio: userProfile.bio,
+    skills: userProfile.skills.join(", ")
+  });
+
+  const handleEdit = () => {
+    setEditForm({
+      name: userProfile.name,
+      email: userProfile.email,
+      role: userProfile.role,
+      department: userProfile.department,
+      location: userProfile.location,
+      phone: userProfile.phone,
+      bio: userProfile.bio,
+      skills: userProfile.skills.join(", ")
+    });
+    setEditDialogOpen(true);
+  };
+
+  const handleSave = () => {
+    const updatedProfile = {
+      ...userProfile,
+      name: editForm.name,
+      email: editForm.email,
+      role: editForm.role,
+      department: editForm.department,
+      location: editForm.location,
+      phone: editForm.phone,
+      bio: editForm.bio,
+      skills: editForm.skills.split(",").map(skill => skill.trim()).filter(skill => skill)
+    };
+    
+    setUserProfile(updatedProfile);
+    setEditDialogOpen(false);
+    
+    toast({
+      title: "Profile updated",
+      description: "Your profile information has been saved successfully",
+    });
+  };
+
+  const handleCancel = () => {
+    setEditForm({
+      name: userProfile.name,
+      email: userProfile.email,
+      role: userProfile.role,
+      department: userProfile.department,
+      location: userProfile.location,
+      phone: userProfile.phone,
+      bio: userProfile.bio,
+      skills: userProfile.skills.join(", ")
+    });
+    setEditDialogOpen(false);
   };
 
   const recentTasks = tasks.slice(0, 5);
@@ -55,7 +124,7 @@ const Profile = () => {
                 <h2 className="text-xl font-semibold text-foreground mb-1">{userProfile.name}</h2>
                 <p className="text-muted-foreground mb-2">{userProfile.role}</p>
                 <Badge variant="secondary" className="mb-4">{userProfile.department}</Badge>
-                <Button variant="outline" size="sm" className="w-full">
+                <Button variant="outline" size="sm" className="w-full" onClick={handleEdit}>
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Profile
                 </Button>
@@ -154,6 +223,107 @@ const Profile = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Profile Dialog */}
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-2xl card-soft max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Edit Profile</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-name">Full Name</Label>
+                <Input
+                  id="edit-name"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-email">Email</Label>
+                <Input
+                  id="edit-email"
+                  type="email"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-role">Role</Label>
+                <Input
+                  id="edit-role"
+                  value={editForm.role}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, role: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-department">Department</Label>
+                <Input
+                  id="edit-department"
+                  value={editForm.department}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, department: e.target.value }))}
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-location">Location</Label>
+                <Input
+                  id="edit-location"
+                  value={editForm.location}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, location: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="edit-phone">Phone</Label>
+                <Input
+                  id="edit-phone"
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="edit-bio">Bio</Label>
+              <Textarea
+                id="edit-bio"
+                value={editForm.bio}
+                onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
+                rows={4}
+                placeholder="Tell us about yourself..."
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="edit-skills">Skills (comma-separated)</Label>
+              <Input
+                id="edit-skills"
+                value={editForm.skills}
+                onChange={(e) => setEditForm(prev => ({ ...prev, skills: e.target.value }))}
+                placeholder="Product Strategy, User Research, Agile..."
+              />
+            </div>
+          </div>
+          
+          <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border/50">
+            <Button variant="ghost" onClick={handleCancel}>
+              <X className="h-4 w-4 mr-2" />
+              Cancel
+            </Button>
+            <Button onClick={handleSave} className="gradient-primary text-primary-foreground">
+              <Save className="h-4 w-4 mr-2" />
+              Save Changes
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
